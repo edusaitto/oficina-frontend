@@ -1,16 +1,15 @@
 import { useEffect, useCallback, useState } from "react";
-import api from "./api/connection";
+import api from "../api/connection";
 import {
   Container,
   Title,
-  LeftNavbar,
-  NavbarButton,
   ContentContainer,
   TopRow,
   TopButton,
   RightTop,
-} from "./styles";
+} from "../styles";
 import { DataGrid } from "@mui/x-data-grid";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   const [nomeOficina, setNomeOficina] = useState();
@@ -54,21 +53,15 @@ export default function Home() {
 
   return (
     <Container>
-      <LeftNavbar>
-        <Title>{nomeOficina}</Title>
-        <NavbarButton href="/">ORÇAMENTOS</NavbarButton>
-        <NavbarButton href="/servicos">SERVIÇOS</NavbarButton>
-        <NavbarButton href="/clientes">CLIENTES</NavbarButton>
-        <NavbarButton href="">VEÍCULOS</NavbarButton>
-      </LeftNavbar>
+      <Navbar nome={nomeOficina} type={1}/>
       <ContentContainer>
         <TopRow>
           <Title>Serviços</Title>
           <RightTop>
-            <TopButton href="/novo-servico">Novo serviço</TopButton>
-            <TopButton href="/servico-orcamento">Fazer orçamento</TopButton>
-            <TopButton href="/edit-servico">Editar serviço</TopButton>
-            <TopButton href="/delete-servico">Excluir serviço</TopButton>
+            <TopButton href="/servicos/novo">Novo serviço</TopButton>
+            <TopButton href="/servicos/orcamento">Fazer orçamento</TopButton>
+            <TopButton href="/servicos/edit">Editar serviço</TopButton>
+            <TopButton href="/servicos/delete">Excluir serviço</TopButton>
           </RightTop>
         </TopRow>
         <DataGrid columns={columns} rows={rows} autoHeight width={"100%"} />

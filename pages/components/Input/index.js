@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import api from "../../api/connection";
 import {
   CustomInput,
   CustomSelect,
@@ -117,11 +116,37 @@ export default function Input(props) {
       </InputContainer>
     );
   }
+  if (props.type === "selectOrcamento") {
+    return (
+      <InputContainer>
+        <InputTitle>{props.title}</InputTitle>
+        <CustomSelect value={valueServico}>
+          <option disabled value={0}>
+            Selecione um orçamento
+          </option>
+          {props.options?.map((opt) => {
+            return (
+              <option
+                key={opt.orcamento_id}
+                value={opt.orcamento_id}
+                onClick={() => {
+                  props.onChange(opt.orcamento_id);
+                  setValueServico(opt.orcamento_id);
+                }}
+              >
+                {opt.orcamento_id}
+              </option>
+            );
+          })}
+        </CustomSelect>
+      </InputContainer>
+    );
+  }
   if (props.type === "edit") {
     return (
       <InputContainer>
         <InputTitle>{props.title}</InputTitle>
-        <CustomInput onChange={props.onChange} value={props.value}/>
+        <CustomInput onChange={props.onChange} value={props.value} readOnly={props.readOnly ?? false}/>
       </InputContainer>
     );
   }

@@ -1,16 +1,15 @@
 import { useEffect, useCallback, useState } from "react";
-import api from "./api/connection";
+import api from "../api/connection";
 import {
   Container,
   Title,
-  LeftNavbar,
-  NavbarButton,
   ContentContainer,
   TopRow,
   TopButton,
   RightTop,
-} from "./styles";
+} from "../styles";
 import { DataGrid } from "@mui/x-data-grid";
+import Navbar from "../components/Navbar";
 
 export default function Clientes() {
   const [nomeOficina, setNomeOficina] = useState();
@@ -74,20 +73,14 @@ export default function Clientes() {
 
   return (
     <Container>
-      <LeftNavbar>
-        <Title>{nomeOficina}</Title>
-        <NavbarButton href="/">ORÇAMENTOS</NavbarButton>
-        <NavbarButton href="/servicos">SERVIÇOS</NavbarButton>
-        <NavbarButton href="/clientes">CLIENTES</NavbarButton>
-        <NavbarButton href="¹veiculos">VEÍCULOS</NavbarButton>
-      </LeftNavbar>
+      <Navbar nome={nomeOficina} type={2}/>
       <ContentContainer>
         <TopRow>
           <Title>Clientes</Title>
           <RightTop>
-            <TopButton href="/novo-cliente">Novo cliente</TopButton>
-            <TopButton href="/edit-cliente">Editar cliente</TopButton>
-            <TopButton href="/delete-cliente">Excluir cliente</TopButton>
+            <TopButton href="/clientes/novo">Novo cliente</TopButton>
+            <TopButton href="/clientes/edit">Editar cliente</TopButton>
+            <TopButton href="/clientes/delete">Excluir cliente</TopButton>
           </RightTop>
         </TopRow>
         <DataGrid columns={columns} rows={rows} autoHeight width={"100%"} />

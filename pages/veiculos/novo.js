@@ -1,6 +1,6 @@
-import { useEffect, useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import { useCallback, useEffect, useState } from "react";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,36 +11,34 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
-export default function Home() {
+export default function NovoVeiculo() {
   const router = useRouter();
   const [clientes, setClientes] = useState();
-  const [veiculos, setVeiculos] = useState();
-  const [clienteId, setClienteId] = useState();
-  const [veiculoId, setVeiculoId] = useState();
+  const [cliente, setCliente] = useState();
+  const [placa, setPlaca] = useState();
+  const [marca, setMarca] = useState();
+  const [modelo, setModelo] = useState();
+  const [ano, setAno] = useState();
   const [loading, setLoading] = useState(false);
 
-  function getVeiculos(id) {
-    api.get(`/veiculo/cliente/${id}`).then((res) => {
-      setVeiculos(res.data);
-    });
-    setClienteId(id);
+  function getClienteId(id) {
+    setCliente(id);
   }
 
-  function getVeiculoId(id) {
-    setVeiculoId(id);
-  }
-
-  const createOrcamento = useCallback(async () => {
+  const addVeiculo = useCallback(async () => {
     setLoading(true);
     let response;
     try {
       response = await api.post(
-        "/orcamento",
+        "/veiculo",
         {
-          cliente_id: clienteId,
-          veiculo_id: veiculoId,
+          cliente_id: cliente,
+          placa: placa,
+          marca: marca,
+          modelo: modelo,
+          ano: ano,
         },
         {
           "Content-Type": "application/json",
@@ -51,10 +49,10 @@ export default function Home() {
       return e;
     } finally {
       if (response.status === 200) {
-        router.push("/");
+        router.push("/veiculos");
       }
     }
-  }, [clienteId, veiculoId]);
+  }, [cliente, placa, marca, modelo, ano]);
 
   useEffect(() => {
     api.get("/cliente").then((res) => {
@@ -65,8 +63,8 @@ export default function Home() {
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
-        <TopButton href="/">Voltar</TopButton>
-        <Title>Novo orçamento</Title>
+        <TopButton href="/veiculos">Voltar</TopButton>
+        <Title>Novo veículo</Title>
       </TopRowInputScreen>
       <ContentContainer>
         <CreateScreenContainer>
@@ -74,13 +72,23 @@ export default function Home() {
             title="Cliente"
             options={clientes}
             type="selectCliente"
-            onChange={getVeiculos}
+            onChange={getClienteId}
           />
           <Input
-            title="Veículo"
-            options={veiculos}
-            type="selectVeiculo"
-            onChange={getVeiculoId}
+            title="Placa"
+            onChange={(evt) => setPlaca(evt.target.value)}
+          />
+          <Input
+            title="Marca"
+            onChange={(evt) => setMarca(evt.target.value)}
+          />
+          <Input
+            title="Modelo"
+            onChange={(evt) => setModelo(evt.target.value)}
+          />
+          <Input
+            title="Ano"
+            onChange={(evt) => setAno(evt.target.value)}
           />
           {loading ? (
             <ReactLoading
@@ -90,9 +98,7 @@ export default function Home() {
               width={"5%"}
             />
           ) : (
-            <BottomButton onClick={() => createOrcamento()}>
-              Salvar
-            </BottomButton>
+            <BottomButton onClick={() => addVeiculo()}>Adicionar</BottomButton>
           )}
         </CreateScreenContainer>
       </ContentContainer>

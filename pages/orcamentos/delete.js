@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import { useCallback, useEffect, useState } from "react";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,11 +11,12 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function Home() {
   const router = useRouter();
   const [orcamentoId, setOrcamentoId] = useState();
+  const [orcamentos, setOrcamentos] = useState();
   const [loading, setLoading] = useState(false);
 
   function getOrcamentoId(id) {
@@ -39,6 +40,12 @@ export default function Home() {
     }
   }, [orcamentoId]);
 
+  useEffect(() => {
+    api.get("/orcamento").then((res) => {
+      setOrcamentos(res.data);
+    });
+  }, []);
+
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
@@ -49,7 +56,9 @@ export default function Home() {
         <CreateScreenContainer>
           <Input
             title="ID do orçamento"
-            onChange={(evt) => getOrcamentoId(evt.target.value)}
+            type="selectOrcamento"
+            options={orcamentos}
+            onChange={getOrcamentoId}
           />
           {loading ? (
             <ReactLoading

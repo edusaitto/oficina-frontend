@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,12 +11,13 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function Home() {
   const router = useRouter();
   const [servicoId, setServicoId] = useState();
   const [orcamentoId, setOrcamentoId] = useState();
+  const [orcamentos, setOrcamentos] = useState();
   const [servicos, setServicos] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -65,6 +66,9 @@ export default function Home() {
     api.get("/servico").then((res) => {
       setServicos(res.data);
     });
+    api.get("/orcamento").then((res) => {
+      setOrcamentos(res.data);
+    });
   }, []);
 
   return (
@@ -77,7 +81,9 @@ export default function Home() {
         <CreateScreenContainer>
           <Input
             title="ID do orçamento"
-            onChange={(evt) => getOrcamentoId(evt.target.value)}
+            type="selectOrcamento"
+            options={orcamentos}
+            onChange={getOrcamentoId}
           />
           <Input
             title="Serviço"

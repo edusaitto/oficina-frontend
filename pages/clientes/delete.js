@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import { useCallback, useEffect, useState } from "react";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,12 +11,22 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function Home() {
   const router = useRouter();
   const [clienteId, setClienteId] = useState();
+  const [clientes, setClientes] = useState();
   const [loading, setLoading] = useState(false);
+
+  const getClienteId = useCallback((newId) => {
+    setClienteId(newId);
+  }, []);
+
+  const getClientes = useCallback(async () => {
+    const response = await api.get("/cliente");
+    setClientes(response.data);
+  }, []);
 
   const deleteCliente = useCallback(async () => {
     setLoading(true);
@@ -35,6 +45,10 @@ export default function Home() {
     }
   }, [clienteId]);
 
+  useEffect(() => {
+    getClientes();
+  }, [])
+
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
@@ -44,8 +58,10 @@ export default function Home() {
       <ContentContainer>
         <CreateScreenContainer>
           <Input
-            title="ID do cliente"
-            onChange={(evt) => setClienteId(evt.target.value)}
+            title="Qual cliente deseja excluir?"
+            type="selectCliente"
+            options={clientes}
+            onChange={getClienteId}
           />
           {loading ? (
             <ReactLoading

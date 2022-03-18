@@ -3,14 +3,13 @@ import api from "./api/connection";
 import {
   Container,
   Title,
-  LeftNavbar,
-  NavbarButton,
   ContentContainer,
   TopRow,
   TopButton,
   RightTop,
 } from "./styles";
 import { DataGrid } from "@mui/x-data-grid";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
   const [nomeOficina, setNomeOficina] = useState();
@@ -72,22 +71,16 @@ export default function Home() {
 
   return (
     <Container>
-      <LeftNavbar>
-        <Title>{nomeOficina}</Title>
-        <NavbarButton href="">ORÇAMENTOS</NavbarButton>
-        <NavbarButton href="/servicos">SERVIÇOS</NavbarButton>
-        <NavbarButton href="/clientes">CLIENTES</NavbarButton>
-        <NavbarButton href="">VEÍCULOS</NavbarButton>
-      </LeftNavbar>
+      <Navbar nome={nomeOficina} type={0}/>
       <ContentContainer>
         <TopRow>
           <Title>Orçamentos</Title>
           <RightTop>
-            <TopButton href="/orcamento">Novo orçamento</TopButton>
-            <TopButton href="/mecanico">Adicionar mecânico</TopButton>
-            <TopButton href="/calculo">Calcular orçamento</TopButton>
-            <TopButton href="/aprovacao">Adicionar aprovação</TopButton>
-            <TopButton href="/delete-orcamento">Excluir orçamento</TopButton>
+            <TopButton href="/orcamentos/novo">Novo orçamento</TopButton>
+            <TopButton href="/orcamentos/mecanico">Adicionar mecânico</TopButton>
+            <TopButton href="/orcamentos/calculo">Calcular orçamento</TopButton>
+            <TopButton href="/orcamentos/aprovacao">Adicionar aprovação</TopButton>
+            <TopButton href="/orcamentos/delete">Excluir orçamento</TopButton>
           </RightTop>
         </TopRow>
         <DataGrid columns={columns} rows={rows} autoHeight width={"100%"} />

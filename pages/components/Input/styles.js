@@ -9,7 +9,7 @@ export const CustomInput = styled.input`
 export const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 16px;
+  margin: 8px;
 `;
 
 export const InputTitle = styled.div`
@@ -18,6 +18,7 @@ export const InputTitle = styled.div`
 `;
 
 export const CustomSelect = styled.select`
-  width: 300px;
+  width: 400px;
   height: 50px;
+  padding: 8px;
 `;

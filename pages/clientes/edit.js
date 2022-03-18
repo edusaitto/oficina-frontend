@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import { useCallback, useEffect, useState } from "react";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,10 +11,11 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function NovoCliente() {
   const router = useRouter();
+  const [clientes, setClientes] = useState();
   const [id, setId] = useState();
   const [nome, setNome] = useState();
   const [cpf, setCpf] = useState();
@@ -23,8 +24,20 @@ export default function NovoCliente() {
   const [loading, setLoading] = useState(false);
   const [loadingFields, setLoadingFields] = useState(false);
 
+  const getClienteId = useCallback((newId) => {
+    getFields(newId);
+    setId(newId);
+  }, []);
+
+  const getClientes = useCallback(async () => {
+    const response = await api.get("/cliente");
+    setClientes(response.data);
+  }, []);
+
   const getFields = useCallback(async (cliente_id) => {
     setLoadingFields(true);
+    setTelefone("");
+    setEndereco("");
     setId(cliente_id);
     let response;
     try {
@@ -32,22 +45,10 @@ export default function NovoCliente() {
     } catch (e) {
       return e;
     } finally {
-      if (cliente_id == "") {
-        setNome("");
-        setCpf("");
-        setTelefone("");
-        setEndereco("");
-      } else if (response.data[0]) {
-        setNome(response.data[0].nome);
-        setCpf(response.data[0].cpf);
-        setTelefone(response.data[0].telefone);
-        setEndereco(response.data[0].endereco);
-      } else {
-        setNome("Cliente não encontrado");
-        setCpf("");
-        setTelefone("");
-        setEndereco("");
-      }
+      setNome(response.data[0].nome);
+      setCpf(response.data[0].cpf);
+      setTelefone(response.data[0].telefone);
+      setEndereco(response.data[0].endereco);
       setLoadingFields(false);
     }
   }, []);
@@ -79,6 +80,10 @@ export default function NovoCliente() {
     }
   }, [nome, cpf, telefone, endereco]);
 
+  useEffect(() => {
+    getClientes();
+  }, []);
+
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
@@ -88,10 +93,10 @@ export default function NovoCliente() {
       <ContentContainer>
         <CreateScreenContainer>
           <Input
-            title="ID do cliente"
-            type="edit"
-            value={id}
-            onChange={(evt) => getFields(evt.target.value)}
+            title="Qual cliente deseja editar?"
+            type="selectCliente"
+            options={clientes}
+            onChange={getClienteId}
           />
           <Input
             title="Nome"

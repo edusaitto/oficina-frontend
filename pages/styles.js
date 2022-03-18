@@ -18,21 +18,6 @@ export const Title = styled.h1`
   padding: 16px;
 `;
 
-export const LeftNavbar = styled.div`
-  background-color: #3c5b89;
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-  min-height: 100vh;
-`;
-
-export const NavbarButton = styled.a`
-  text-decoration: none;
-  padding: 16px;
-  font-size: 16px;
-  color: white;
-`;
-
 export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;

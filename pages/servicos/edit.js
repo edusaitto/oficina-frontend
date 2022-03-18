@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import { useCallback, useEffect, useState } from "react";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,7 +11,7 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function Home() {
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function Home() {
   const [tipo, setTipo] = useState();
   const [descricao, setDescricao] = useState();
   const [valor, setValor] = useState();
+  const [servicos, setServicos] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingFields, setLoadingFields] = useState(false);
 
@@ -74,6 +75,12 @@ export default function Home() {
     }
   }, [tipo, descricao, valor]);
 
+  useEffect(() => {
+    api.get("/servico").then((res) => {
+      setServicos(res.data);
+    });
+  }, []);
+
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
@@ -83,10 +90,10 @@ export default function Home() {
       <ContentContainer>
         <CreateScreenContainer>
           <Input
-            title="ID do serviço"
-            type="edit"
-            value={id}
-            onChange={(evt) => getFields(evt.target.value)}
+            title="Serviço"
+            options={servicos}
+            type="selectServico"
+            onChange={getFields}
           />
           {loadingFields ? (
             <ReactLoading

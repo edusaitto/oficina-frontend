@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,32 +11,36 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function Home() {
   const router = useRouter();
-  const [mecanicoId, setMecanicoId] = useState();
-  const [orcamentoId, setOrcamentoId] = useState();
-  const [mecanicos, setMecanicos] = useState();
+  const [clientes, setClientes] = useState();
+  const [veiculos, setVeiculos] = useState();
+  const [clienteId, setClienteId] = useState();
+  const [veiculoId, setVeiculoId] = useState();
   const [loading, setLoading] = useState(false);
 
-  function getMecanicoId(id) {
-    setMecanicoId(id);
+  function getVeiculos(id) {
+    api.get(`/veiculo/cliente/${id}`).then((res) => {
+      setVeiculos(res.data);
+    });
+    setClienteId(id);
   }
 
-  function getOrcamentoId(id) {
-    setOrcamentoId(id);
+  function getVeiculoId(id) {
+    setVeiculoId(id);
   }
 
-  const updateOrcamento = useCallback(async () => {
+  const createOrcamento = useCallback(async () => {
     setLoading(true);
     let response;
     try {
-      response = await api.put(
-        "/orcamento/mecanico",
+      response = await api.post(
+        "/orcamento",
         {
-          orcamento_id: orcamentoId,
-          mecanico_id: mecanicoId,
+          cliente_id: clienteId,
+          veiculo_id: veiculoId,
         },
         {
           "Content-Type": "application/json",
@@ -50,11 +54,11 @@ export default function Home() {
         router.push("/");
       }
     }
-  }, [mecanicoId, orcamentoId]);
+  }, [clienteId, veiculoId]);
 
   useEffect(() => {
-    api.get("/mecanico").then((res) => {
-      setMecanicos(res.data);
+    api.get("/cliente").then((res) => {
+      setClientes(res.data);
     });
   }, []);
 
@@ -62,19 +66,21 @@ export default function Home() {
     <ContainerInputScreen>
       <TopRowInputScreen>
         <TopButton href="/">Voltar</TopButton>
-        <Title>Adicionar mecânico</Title>
+        <Title>Novo orçamento</Title>
       </TopRowInputScreen>
       <ContentContainer>
         <CreateScreenContainer>
           <Input
-            title="ID do orçamento"
-            onChange={(evt) => getOrcamentoId(evt.target.value)}
+            title="Cliente"
+            options={clientes}
+            type="selectCliente"
+            onChange={getVeiculos}
           />
           <Input
-            title="Mecânico"
-            options={mecanicos}
-            type="selectMecanico"
-            onChange={getMecanicoId}
+            title="Veículo"
+            options={veiculos}
+            type="selectVeiculo"
+            onChange={getVeiculoId}
           />
           {loading ? (
             <ReactLoading
@@ -84,7 +90,7 @@ export default function Home() {
               width={"5%"}
             />
           ) : (
-            <BottomButton onClick={() => updateOrcamento()}>
+            <BottomButton onClick={() => createOrcamento()}>
               Salvar
             </BottomButton>
           )}

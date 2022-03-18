@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import { useCallback, useEffect, useState } from "react";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,12 +11,17 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
 export default function Home() {
   const router = useRouter();
   const [servicoId, setServicoId] = useState();
+  const [servicos, setServicos] = useState();
   const [loading, setLoading] = useState(false);
+
+  function getServicoId(id) {
+    setServicoId(id);
+  }
 
   const deleteServico = useCallback(async () => {
     setLoading(true);
@@ -35,6 +40,12 @@ export default function Home() {
     }
   }, [servicoId]);
 
+  useEffect(() => {
+    api.get("/servico").then((res) => {
+      setServicos(res.data);
+    });
+  }, []);
+
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
@@ -44,8 +55,10 @@ export default function Home() {
       <ContentContainer>
         <CreateScreenContainer>
           <Input
-            title="ID do serviço"
-            onChange={(evt) => setServicoId(evt.target.value)}
+            title="Serviço"
+            options={servicos}
+            type="selectServico"
+            onChange={getServicoId}
           />
           {loading ? (
             <ReactLoading
@@ -55,9 +68,7 @@ export default function Home() {
               width={"5%"}
             />
           ) : (
-            <BottomButton onClick={() => deleteServico()}>
-              Excluir
-            </BottomButton>
+            <BottomButton onClick={() => deleteServico()}>Excluir</BottomButton>
           )}
         </CreateScreenContainer>
       </ContentContainer>

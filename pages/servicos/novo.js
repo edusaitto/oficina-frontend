@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import api from "./api/connection";
-import Input from "./components/Input";
+import api from "../api/connection";
+import Input from "../components/Input";
 import ReactLoading from "react-loading";
 import { useRouter } from "next/router";
 import {
@@ -11,27 +11,25 @@ import {
   ContainerInputScreen,
   BottomButton,
   CreateScreenContainer,
-} from "./styles";
+} from "../styles";
 
-export default function NovoCliente() {
+export default function Home() {
   const router = useRouter();
-  const [nome, setNome] = useState();
-  const [cpf, setCpf] = useState();
-  const [telefone, setTelefone] = useState();
-  const [endereco, setEndereco] = useState();
+  const [tipo, setTipo] = useState();
+  const [descricao, setDescricao] = useState();
+  const [valor, setValor] = useState();
   const [loading, setLoading] = useState(false);
 
-  const addCliente = useCallback(async () => {
+  const addServico = useCallback(async () => {
     setLoading(true);
     let response;
     try {
       response = await api.post(
-        "/cliente",
+        "/servico",
         {
-          nome: nome,
-          cpf: cpf,
-          telefone: telefone ?? null,
-          endereco: endereco ?? null,
+          tipo_servico: tipo,
+          descricao: descricao,
+          valor: valor
         },
         {
           "Content-Type": "application/json",
@@ -42,28 +40,30 @@ export default function NovoCliente() {
       return e;
     } finally {
       if (response.status === 200) {
-        router.push("/clientes");
+        router.push("/servicos");
       }
     }
-  }, [nome, cpf, telefone, endereco]);
+  }, [tipo, descricao, valor]);
 
   return (
     <ContainerInputScreen>
       <TopRowInputScreen>
-        <TopButton href="/clientes">Voltar</TopButton>
-        <Title>Novo cliente</Title>
+        <TopButton href="/servicos">Voltar</TopButton>
+        <Title>Novo serviço</Title>
       </TopRowInputScreen>
       <ContentContainer>
         <CreateScreenContainer>
-          <Input title="Nome" onChange={(evt) => setNome(evt.target.value)} />
-          <Input title="CPF" onChange={(evt) => setCpf(evt.target.value)} />
           <Input
-            title="Telefone (opcional)"
-            onChange={(evt) => setTelefone(evt.target.value)}
+            title="Tipo de serviço"
+            onChange={(evt) => setTipo(evt.target.value)}
           />
           <Input
-            title="Endereço (opcional)"
-            onChange={(evt) => setEndereco(evt.target.value)}
+            title="Descrição"
+            onChange={(evt) => setDescricao(evt.target.value)}
+          />
+          <Input
+            title="Valor do serviço"
+            onChange={(evt) => setValor(evt.target.value)}
           />
           {loading ? (
             <ReactLoading
@@ -73,7 +73,9 @@ export default function NovoCliente() {
               width={"5%"}
             />
           ) : (
-            <BottomButton onClick={() => addCliente()}>Adicionar</BottomButton>
+            <BottomButton onClick={() => addServico()}>
+              Adicionar
+            </BottomButton>
           )}
         </CreateScreenContainer>
       </ContentContainer>
