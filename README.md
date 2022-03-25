@@ -1,6 +1,6 @@
 ## Passos para rodar o projeto
 
-# Configuração de dependências e ambiente
+### Configuração de dependências e ambiente
 
 ```bash
 npm install
@@ -9,7 +9,7 @@ npm install
 - Acessar o arquivo pages/api/connection.js e verificar a baseUrl
 - Por padrão a baseUrl deve ser http://localhost:3001
 
-# Rodar o projeto
+### Rodar o projeto
 
 ```bash
 npm run dev
