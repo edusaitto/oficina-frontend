@@ -11,6 +11,7 @@ export default function Input(props) {
   const [valueVeiculo, setValueVeiculo] = useState(0);
   const [valueMecanico, setValueMecanico] = useState(0);
   const [valueServico, setValueServico] = useState(0);
+  const [valueModelo, setValueModelo] = useState(0);
 
   if (props.type === "selectCliente") {
     return (
@@ -135,6 +136,32 @@ export default function Input(props) {
                 }}
               >
                 {opt.orcamento_id}
+              </option>
+            );
+          })}
+        </CustomSelect>
+      </InputContainer>
+    );
+  }
+  if (props.type === "selectModelo") {
+    return (
+      <InputContainer>
+        <InputTitle>{props.title}</InputTitle>
+        <CustomSelect value={valueModelo}>
+          <option disabled value={0}>
+            Selecione um modelo
+          </option>
+          {props.options?.map((opt) => {
+            return (
+              <option
+                key={opt.modelo_id}
+                value={opt.modelo_id}
+                onClick={() => {
+                  props.onChange(opt.modelo_id);
+                  setValueModelo(opt.modelo_id);
+                }}
+              >
+                {`${opt.marca} ${opt.modelo}`}
               </option>
             );
           })}

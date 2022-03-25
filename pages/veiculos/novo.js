@@ -18,13 +18,17 @@ export default function NovoVeiculo() {
   const [clientes, setClientes] = useState();
   const [cliente, setCliente] = useState();
   const [placa, setPlaca] = useState();
-  const [marca, setMarca] = useState();
   const [modelo, setModelo] = useState();
+  const [modelos, setModelos] = useState();
   const [ano, setAno] = useState();
   const [loading, setLoading] = useState(false);
 
   function getClienteId(id) {
     setCliente(id);
+  }
+
+  function getModeloId(id) {
+    setModelo(id)
   }
 
   const addVeiculo = useCallback(async () => {
@@ -35,9 +39,8 @@ export default function NovoVeiculo() {
         "/veiculo",
         {
           cliente_id: cliente,
+          modelo_id: modelo,
           placa: placa,
-          marca: marca,
-          modelo: modelo,
           ano: ano,
         },
         {
@@ -52,12 +55,15 @@ export default function NovoVeiculo() {
         router.push("/veiculos");
       }
     }
-  }, [cliente, placa, marca, modelo, ano]);
+  }, [cliente, placa, modelo, ano]);
 
   useEffect(() => {
     api.get("/cliente").then((res) => {
       setClientes(res.data);
     });
+    api.get("/modelo").then((res) => {
+      setModelos(res.data);
+    })
   }, []);
 
   return (
@@ -74,17 +80,15 @@ export default function NovoVeiculo() {
             type="selectCliente"
             onChange={getClienteId}
           />
+          <Input 
+            title="Modelo"
+            options={modelos}
+            type="selectModelo"
+            onChange={getModeloId}
+          />
           <Input
             title="Placa"
             onChange={(evt) => setPlaca(evt.target.value)}
-          />
-          <Input
-            title="Marca"
-            onChange={(evt) => setMarca(evt.target.value)}
-          />
-          <Input
-            title="Modelo"
-            onChange={(evt) => setModelo(evt.target.value)}
           />
           <Input
             title="Ano"

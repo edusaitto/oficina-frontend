@@ -17,12 +17,11 @@ export default function Home() {
   const router = useRouter();
   const [veiculos, setVeiculos] = useState();
   const [veiculo, setVeiculo] = useState();
-  const [cliente, setCliente] = useState();
   const [clientes, setClientes] = useState();
   const [clienteId, setClienteId] = useState();
   const [placa, setPlaca] = useState();
-  const [marca, setMarca] = useState();
   const [modelo, setModelo] = useState();
+  const [modelos, setModelos] = useState();
   const [ano, setAno] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingFields, setLoadingFields] = useState(false);
@@ -37,9 +36,18 @@ export default function Home() {
     setVeiculos(response.data);
   }, []);
 
+  const getModelos = useCallback(async () => {
+    const response = await api.get("/modelo");
+    setModelos(response.data);
+  }, []);
+
   const getClienteId = useCallback((id) => {
     setClienteId(id)
-  }, [])
+  }, []);
+
+  const getModelo = useCallback((id) => {
+    setModelo(id);
+  }, []);
 
   const getFields = useCallback(async (veiculo_id) => {
     setLoadingFields(true);
@@ -51,9 +59,8 @@ export default function Home() {
       return e;
     } finally {
       setClienteId(response.data[0].cliente_id);
+      setModelo(response.data[0].modelo_id);
       setPlaca(response.data[0].placa);
-      setMarca(response.data[0].marca);
-      setModelo(response.data[0].modelo);
       setAno(response.data[0].ano);
       setLoadingFields(false);
     }
@@ -68,9 +75,8 @@ export default function Home() {
         {
           veiculo_id: veiculo,
           cliente_id: clienteId,
+          modelo_id: modelo,
           placa: placa,
-          marca: marca,
-          modelo: modelo,
           ano: ano,
         },
         {
@@ -85,11 +91,12 @@ export default function Home() {
         router.push("/veiculos");
       }
     }
-  }, [veiculo, clienteId, placa, marca, modelo, ano]);
+  }, [veiculo, clienteId, placa, modelo, ano]);
 
   useEffect(() => {
     getVeiculos();
     getClientes();
+    getModelos();
   }, []);
 
   return (
@@ -121,23 +128,17 @@ export default function Home() {
                 options={clientes}
                 onChange={getClienteId}
               />
+              <Input 
+                title="Modelo"
+                type="selectModelo"
+                options={modelos}
+                onChange={getModelo}
+              />
               <Input
                 title="Placa"
                 type="edit"
                 value={placa}
                 onChange={(evt) => setPlaca(evt.target.value)}
-              />
-              <Input
-                title="Marca"
-                type="edit"
-                value={marca}
-                onChange={(evt) => setMarca(evt.target.value)}
-              />
-              <Input
-                title="Modelo"
-                type="edit"
-                value={modelo}
-                onChange={(evt) => setModelo(evt.target.value)}
               />
               <Input
                 title="Ano"
